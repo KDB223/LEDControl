@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">LED Control Pro</string>
+    <string name="app_name_full">LED Control Pro</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="app_greet">Welcome to LED Control!</string>
+    <string name="app_description">Enable the Master Switch below to get started. Choose from one of the following triggers to set when the LED turns on/off while plugged in.</string>
+    <string name="label_charging">While Charging</string>
+    <string name="label_charging_adapter">While Charging (through adapter)</string>
+    <string name="label_full">Battery Full</string>
+    <string name="label_charging_or_full">While Charging or Battery Full</string>
+    <string name="label_charging_full_blink">While Charging (Blinking) or Battery Full</string>
+    <string name="label_USB">When USB Connected</string>
+    <string name="label_display">When Display is On</string>
+    <string name="switch_label">MASTER SWITCH</string>
+    <string name="label_disk">On Internal Storage I/O Activity</string>
+    <string name="label_ext">On External Storage I/O Activity</string>
+    <string name="dialog_greet">Welcome to LED control! Tap NEXT and grant root access when prompted. App may freeze for a while, don\'t panic!</string>
+    <string name="hello_universal">Welcome!</string>
+    <string name="dialog_title_root_failed">Failed to get root access!</string>
+    <string name="dialog_content_root_failed">Looks like your device is not rooted or you denied root access. This app NEEDS root access to work.</string>
+    <string name="dialog_title_device_error">Error: Incompatible device found!</string>
+    <string name="dialog_content_device_error">Your device is currently not supported by LED Control. This app is meant only for the Nexus 6, Moto X, Moto G and Moto E.</string>
+    <string name="toast_charger_info">Plug in your charger to see changes</string>
+    <string name="dialog_content_charging_info">If you do not see the selected trigger acting immediately, please re-plug in your charger</string>
+    <string name="dialog_button_positive_ok">OK, got it</string>
+    <string name="device_moto_g">Moto G detected!</string>
+    <string name="device_moto_e">Moto E detected!</string>
+    <string name="device_moto_x">Moto X detected!</string>
+    <string name="device_nexus_6">Nexus 6 detected!</string>
+    <string name="label_brightness">Brightness</string>
+    <string name="action_set_on_boot">Set on boot</string>
+    <string name="dialog_getting_root_access">Requesting Root Access…</string>
+    <string name="notification_content">Successfully set LED trigger on boot!</string>
+    <string name="share_text">What\'s up? \nCheck out this cool app I installed to jazz out my phone\'s LED:\nhttps://play.google.com/store/apps/details?id=com.kdb.ledcontrol</string>
+    <string name="dialog_about_content">An app to set kernel specific charging triggers for your device\'s LED.\n\nThank you for purchasing LED Control Pro. You\'re awesome!\nPlease leave a rating on Play Store if you found this app useful.\n\nSupport: <a href="http://forum.xda-developers.com/android/apps-games/app-free-KDB-led-control">XDA</a>\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Source: <a href="https://www.github.com/LED-Control">Github</a></string>
+    <string name="dialog_about_footer">Any questions? Comments? Send your feedback to: <a href = "mailto:LEDControlFeedback@gmail.com">LEDControlFeedback@gmail.com</a></string>
+    <string name="dialog_about_title">LED Control Pro 1.0 </string>
+</resources>

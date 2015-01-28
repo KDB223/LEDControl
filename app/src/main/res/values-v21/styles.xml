@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="Theme.AppCompat">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="md_dark_theme">true</item>
+        <item name="md_title_color">#B0BEC5</item>
+        <item name="md_background_color">#FF272727</item>
+    </style>
+    <style name="ProgressBar" parent="android:Theme.Material">
+        <item name="android:textColor">#B0BEC5</item>
+    </style>
+    <style name="myDialog" parent="MD_Dark">
+
+    </style>
+</resources>

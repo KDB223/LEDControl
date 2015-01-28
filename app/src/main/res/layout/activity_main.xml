@@ -1,0 +1,394 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    tools:context=".MainActivity"
+    android:background="@color/background">
+
+    <TableRow
+        android:id="@+id/tableRowBrightness"
+        android:layout_width="fill_parent"
+        android:layout_height="80dp"
+        android:layout_alignLeft="@+id/tableRowSwitch"
+        android:layout_alignStart="@+id/tableRowSwitch"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="8dp"
+        android:visibility="invisible"
+        android:layout_above="@+id/tableRowSwitch"
+        android:gravity="center_vertical|center_horizontal">
+
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:visibility="visible"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center|center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/textView3"
+                android:paddingStart="16dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginEnd="6dp"
+                android:text="@string/label_brightness"
+                android:layout_marginBottom="4dp"
+                android:paddingRight="6dp"
+                android:visibility="visible" />
+
+            <SeekBar
+                android:id="@+id/SeekBarBrightness"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/textView3"
+                android:paddingTop="2dp"
+                android:layout_marginTop="2dp"
+                android:theme="@style/SeekBarAppTheme"
+                android:max="10"
+                style="@style/SeekBarAppTheme"
+                android:progress="10" />
+
+<!--            <SeekBar
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/seekBar"
+                android:layout_toEndOf="@+id/textView3"
+                android:longClickable="false"
+                android:max="10"
+                android:layout_marginRight="8dp"
+                android:interpolator="@android:anim/bounce_interpolator"
+                android:visibility="visible" />-->
+
+        </RelativeLayout>
+
+    </TableRow>
+
+
+    <TableRow
+        android:id="@+id/tableRowText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tableRowSwitch"
+        android:layout_alignStart="@+id/tableRowSwitch"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="8dp"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="6dp"
+            android:text="@string/app_description"
+            android:textAppearance="?android:attr/textAppearanceMediumInverse"
+            android:textColor="@color/secondary_text_default_material_dark"
+            android:textSize="14dp"
+            android:lineSpacingExtra="1dp" />
+    </TableRow>
+
+
+    <TableRow
+        android:id="@+id/tableRowSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="0"
+        android:layout_below="@+id/tableRowText"
+        android:layout_alignParentStart="true"
+        android:elevation="4dp">
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:buttonTint="#ff757575"
+            android:checked="false"
+            android:clickable="true"
+            android:minHeight="50dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:text="@string/switch_label"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large.Inverse"
+            android:textColor="#B0BEC5"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            app:splitTrack="false"
+            android:elevation="4dp" />
+
+    </TableRow>
+
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tableRowSwitch"
+        android:animateLayoutChanges="true">
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tableRowSwitch"
+            android:animateLayoutChanges="true"
+            android:clickable="false"
+            android:paddingStart="16dp"
+            android:showDividers="middle|beginning|end"
+            android:visibility="gone"
+            android:divider="#ffff0100"
+            android:dividerPadding="1dp">
+
+
+            <RadioButton
+                android:id="@+id/rBtn_Charging"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="2dp"
+                android:checked="false"
+                android:paddingLeft="8dp"
+                android:text="@string/label_charging"
+                android:textColor="@color/primary_material_light"
+                android:textSize="16dp"
+                android:tint = "#448AFF"
+                android:animateLayoutChanges="true"
+                android:longClickable="true"
+                android:clickable="true" />
+
+
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingBottom="2dp"
+                android:paddingEnd="2dp"
+                android:paddingStart="2dp"
+                android:paddingTop="2dp"
+                android:src="@color/ripple_material_light"
+                android:layout_marginRight="8dp" />
+
+            <RadioButton
+            android:id="@+id/rBtn_Charging_adapter"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="2dp"
+                android:checked="false"
+            android:paddingLeft="8dp"
+            android:text="@string/label_charging_adapter"
+            android:textColor="@color/primary_material_light"
+            android:textSize="16dp"
+            android:tint = "#448AFF"
+            android:animateLayoutChanges="true"
+            android:longClickable="true"
+                android:visibility="gone"
+                android:clickable="true" />
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingBottom="2dp"
+                android:paddingEnd="2dp"
+                android:paddingStart="2dp"
+                android:paddingTop="2dp"
+                android:src="@color/ripple_material_light"
+                android:layout_marginRight="8dp"
+                android:visibility="gone"
+                android:id="@+id/divider_extra" />
+
+            <RadioButton
+                android:id="@+id/rBtn_Full"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="2dp"
+                android:checked="false"
+                android:paddingLeft="8dp"
+                android:text="@string/label_full"
+                android:textColor="@color/primary_material_light"
+                android:textSize="16dp"
+                android:tint = "#448AFF"
+                android:animateLayoutChanges="true"
+                android:longClickable="true"
+                android:clickable="true" />
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingBottom="2dp"
+                android:paddingEnd="2dp"
+                android:paddingStart="2dp"
+                android:paddingTop="2dp"
+                android:src="@color/ripple_material_light"
+                android:layout_marginRight="8dp" />
+
+            <RadioButton
+                android:id="@+id/rBtn_Charging_or_full"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="2dp"
+                android:buttonTintMode="src_atop"
+                android:checked="false"
+                android:paddingLeft="8dp"
+                android:text="@string/label_charging_or_full"
+                android:textColor="@color/primary_material_light"
+                android:textSize="16dp"
+                android:animateLayoutChanges="true"
+                android:clickable="true" />
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingBottom="2dp"
+                android:paddingEnd="2dp"
+                android:paddingStart="2dp"
+                android:paddingTop="2dp"
+                android:src="@color/ripple_material_light"
+                android:layout_marginRight="8dp" />
+
+            <RadioButton
+                android:id="@+id/rBtn_Charging_or_full_blink"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="2dp"
+                android:buttonTintMode="src_atop"
+                android:checked="false"
+                android:paddingLeft="8dp"
+                android:text="@string/label_charging_full_blink"
+                android:textColor="@color/primary_material_light"
+                android:textSize="16dp"
+                android:animateLayoutChanges="true"
+                android:clickable="true" />
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingBottom="2dp"
+                android:paddingEnd="2dp"
+                android:paddingStart="2dp"
+                android:paddingTop="2dp"
+                android:src="@color/ripple_material_light"
+                android:layout_marginRight="8dp" />
+
+            <RadioButton
+                android:id="@+id/rBtn_USB"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="2dp"
+                android:buttonTintMode="src_atop"
+                android:checked="false"
+                android:paddingLeft="8dp"
+                android:text="@string/label_USB"
+                android:textColor="@color/primary_material_light"
+                android:textSize="16dp"
+                android:animateLayoutChanges="true"
+                android:clickable="true" />
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingBottom="2dp"
+                android:paddingEnd="2dp"
+                android:paddingStart="2dp"
+                android:paddingTop="2dp"
+                android:src="@color/ripple_material_light"
+                android:paddingRight="2dp"
+                android:layout_marginRight="8dp" />
+
+            <RadioButton
+                android:id="@+id/rBtn_Display"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="2dp"
+                android:checked="false"
+                android:paddingLeft="8dp"
+                android:text="@string/label_display"
+                android:textColor="@color/primary_material_light"
+                android:textSize="16dp"
+                android:animateLayoutChanges="true"
+                android:clickable="true" />
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingBottom="2dp"
+                android:paddingEnd="2dp"
+                android:paddingStart="2dp"
+                android:paddingTop="2dp"
+                android:src="@color/ripple_material_light"
+                android:layout_marginRight="8dp"
+                android:id="@+id/divider_extra2" />
+
+            <RadioButton
+                android:id="@+id/rBtn_Disk_IO"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="2dp"
+                android:buttonTintMode="src_atop"
+                android:checked="false"
+                android:paddingLeft="8dp"
+                android:text="@string/label_disk"
+                android:textColor="@color/primary_material_light"
+                android:textSize="16dp"
+                android:animateLayoutChanges="true"
+                android:clickable="true" />
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingBottom="2dp"
+                android:paddingEnd="2dp"
+                android:paddingStart="2dp"
+                android:paddingTop="2dp"
+                android:src="@color/ripple_material_light"
+                android:layout_marginRight="8dp"
+                android:id="@+id/divider_extra3"
+                android:visibility="gone" />
+
+            <RadioButton
+                android:id="@+id/rBtn_Ext_IO"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="2dp"
+                android:buttonTintMode="src_atop"
+                android:checked="false"
+                android:paddingLeft="8dp"
+                android:text="@string/label_ext"
+                android:textColor="@color/primary_material_light"
+                android:textSize="16dp"
+                android:animateLayoutChanges="true"
+                android:clickable="true"
+                android:visibility="gone" />
+        </RadioGroup>
+
+     </ScrollView>
+
+
+
+</RelativeLayout>
