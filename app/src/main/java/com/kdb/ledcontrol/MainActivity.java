@@ -46,6 +46,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 public class MainActivity extends ActionBarActivity {
 
     private static final String PREF_FIRST_RUN = "first_run";
+    //VCS Test
+    //VCS TEST
     private static final String PREF_SET_ON_BOOT = "set_on_boot";
     private static final String PREF_TIP = "tip";
     public static Context context;
