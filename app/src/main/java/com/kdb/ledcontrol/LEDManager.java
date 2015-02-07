@@ -149,7 +149,10 @@ public class LEDManager {
      *  Returns an integer value depending on currently set trigger
      */
     public int checkState() {
-        //not aborting if not root here, since these commands can run without root access
+        //not aborting if not rooted here, but the directory needs to exist if we wish to 'cat' it
+        if (!isDeviceSupported()){
+            return -1;
+        }
         String output = null;
         int val = 0;
         try {
@@ -185,6 +188,9 @@ public class LEDManager {
      */
     public int checkBrightness() {
         int brightness = 0;
+        if (!isDeviceSupported()){
+            return 0;
+        }
         try {
             toDevice.writeBytes("cat " + pathToBrightness + "\n");
             toDevice.flush();
@@ -200,7 +206,7 @@ public class LEDManager {
      */
     public void Apply() {
         //again, stop if root not found:
-        if (!rooted || cmd == null)
+        if (!rooted || cmd == null || !isDeviceSupported())
             return;
         try {
             toDevice.writeBytes("echo " + cmd + " > " + pathToLED + "\n");
@@ -219,7 +225,7 @@ public class LEDManager {
     }
 
     public void ApplyBrightness(int brightness) {
-        if (!rooted) return;
+        if (!rooted || !isDeviceSupported()) return;
         if (brightness != 10) brightness *= 25;
         else brightness = 255;
         try {
@@ -235,7 +241,6 @@ public class LEDManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     /*
