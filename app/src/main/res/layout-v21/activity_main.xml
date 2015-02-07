@@ -50,8 +50,7 @@
                 android:layout_toEndOf="@+id/textView3"
                 android:paddingTop="2dp"
                 android:layout_marginTop="2dp"
-                android:max="10"
-                android:progress="10" />
+                android:max="10" />
 
 <!--            <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                 android:id="@+id/discreteSeekBarBrightness"
@@ -112,27 +111,47 @@
         android:stretchColumns="0"
         android:layout_below="@+id/tableRowText"
         android:layout_alignParentStart="true"
-        android:elevation="4dp">
+        android:elevation="4dp"
+        android:background="@drawable/grey_ripple"
+        android:clickable="true">
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="48dp"
+            android:layout_alignParentStart="true"
+            android:id="@+id/SwitchBar"
+            android:clickable="true"
+            android:background="@drawable/grey_ripple">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large.Inverse"
+            android:text="@string/switch_label"
+            android:id="@+id/textView6"
+            android:paddingLeft="16dp"
+            android:textColor="#B0BEC5"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:layout_gravity="left|center_vertical" />
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/switch1"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/grey_ripple"
+            android:layout_gravity="end|center_vertical"
+            android:background="@drawable/switch_ripple"
             android:buttonTint="#ff757575"
             android:checked="false"
             android:clickable="true"
             android:minHeight="50dp"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
-            android:text="@string/switch_label"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large.Inverse"
             android:textColor="#B0BEC5"
             android:textSize="20dp"
             android:textStyle="bold"
             app:splitTrack="false"
             android:elevation="4dp" />
-
+        </FrameLayout>
     </TableRow>
 
 

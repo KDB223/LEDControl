@@ -33,10 +33,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,7 +59,6 @@ public class MainActivity extends ActionBarActivity {
     public boolean firstRun;
     private LEDManager manager;
     private RadioGroup radioGroup;
-    private SwitchCompat mSwitch;
     private RadioButton rBtn_Charging;
     private RadioButton rBtn_Full;
     private RadioButton rBtn_Charging_or_full;
@@ -67,6 +68,7 @@ public class MainActivity extends ActionBarActivity {
     private RadioButton rBtn_Display;
     private RadioButton rBtn_DiskIO;
     private RadioButton rBtn_ExtIO;
+    private SwitchCompat mSwitch;
     private ImageView divider_extra;
     private ImageView divider_extra2;
     private ImageView divider_extra3;
@@ -86,12 +88,12 @@ public class MainActivity extends ActionBarActivity {
     private TextView aboutDialogText;
     private SeekBar brightnessBar;
     private String deviceName = Build.DEVICE;
+    private FrameLayout switchBar;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = MainActivity.this;
-
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -102,7 +104,6 @@ public class MainActivity extends ActionBarActivity {
         setOnBoot = getSharedPreferences(EXTRA_INFO_SHARED_PREF, 0).getBoolean(PREF_SET_ON_BOOT, false);
         tip = getSharedPreferences(EXTRA_INFO_SHARED_PREF, 0).getBoolean(PREF_TIP, true);
         firstRun = getSharedPreferences(EXTRA_INFO_SHARED_PREF, 0).getBoolean(PREF_FIRST_RUN, true);
-
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
         mSwitch = (SwitchCompat) findViewById(R.id.switch1);
         rBtn_Charging = (RadioButton) findViewById(R.id.rBtn_Charging);
@@ -119,6 +120,7 @@ public class MainActivity extends ActionBarActivity {
         divider_extra3 = (ImageView) findViewById(R.id.divider_extra3);
         brightnessTableRow = (TableRow) findViewById(R.id.tableRowBrightness);
         textTableRow = (TableRow) findViewById(R.id.tableRowText);
+        switchBar = (FrameLayout) findViewById(R.id.SwitchBar);
         brightnessBar = (SeekBar) findViewById(R.id.SeekBarBrightness);
         aboutDialogText = (TextView) findViewById(R.id.AboutContent);
         if (aboutDialogText != null) aboutDialogText.setMovementMethod(LinkMovementMethod.getInstance());
@@ -173,6 +175,13 @@ public class MainActivity extends ActionBarActivity {
                 }
             }
 
+        });
+
+        switchBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSwitch.setChecked(!mSwitch.isChecked());
+            }
         });
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {

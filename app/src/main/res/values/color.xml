@@ -5,4 +5,5 @@
     <color name="colorAccent">#C6FF00</color>
     <color name="ripple">#bebebe</color>
     <color name="background">#39000000</color>
+    <color name="colorSwitchBarHighlight">#FF2B2A2A</color>
 </resources>
