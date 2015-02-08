@@ -68,7 +68,7 @@ public class MainActivity extends ActionBarActivity {
     private RadioButton rBtn_Display;
     private RadioButton rBtn_DiskIO;
     private RadioButton rBtn_ExtIO;
-    private SwitchCompat mSwitch;
+    private CompoundButton mSwitch;
     private ImageView divider_extra;
     private ImageView divider_extra2;
     private ImageView divider_extra3;
@@ -105,7 +105,12 @@ public class MainActivity extends ActionBarActivity {
         tip = getSharedPreferences(EXTRA_INFO_SHARED_PREF, 0).getBoolean(PREF_TIP, true);
         firstRun = getSharedPreferences(EXTRA_INFO_SHARED_PREF, 0).getBoolean(PREF_FIRST_RUN, true);
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-        mSwitch = (SwitchCompat) findViewById(R.id.switch1);
+        //mSwitch = (SwitchCompat) findViewById(R.id.switch1);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+           mSwitch = (SwitchCompat) findViewById(R.id.switch1);
+        } else {
+           mSwitch = (Switch) findViewById(R.id.switch2);
+        }
         rBtn_Charging = (RadioButton) findViewById(R.id.rBtn_Charging);
         rBtn_Full = (RadioButton) findViewById(R.id.rBtn_Full);
         rBtn_Charging_or_full = (RadioButton) findViewById(R.id.rBtn_Charging_or_full);

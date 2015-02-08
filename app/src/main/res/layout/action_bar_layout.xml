@@ -10,5 +10,5 @@
         android:textColor="#B0BEC5"
         android:text="@string/app_name_full"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Title"
-        android:textSize="24dp" />
+        android:textSize="22dp" />
 </LinearLayout>

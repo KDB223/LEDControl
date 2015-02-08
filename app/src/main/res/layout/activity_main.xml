@@ -128,19 +128,11 @@
                 android:id="@+id/switch1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:buttonTint="#ff757575"
+                android:layout_gravity="center_vertical|end"
                 android:checked="false"
                 android:clickable="true"
-                android:minHeight="50dp"
-                android:paddingEnd="16dp"
-                android:paddingStart="16dp"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large.Inverse"
-                android:textColor="#B0BEC5"
-                android:textSize="20dp"
-                android:textStyle="bold"
                 app:splitTrack="false"
-                android:elevation="4dp" />
+                android:layout_marginRight="16dp" />
         </FrameLayout>
     </TableRow>
 
