@@ -105,11 +105,10 @@ public class MainActivity extends ActionBarActivity {
         tip = getSharedPreferences(EXTRA_INFO_SHARED_PREF, 0).getBoolean(PREF_TIP, true);
         firstRun = getSharedPreferences(EXTRA_INFO_SHARED_PREF, 0).getBoolean(PREF_FIRST_RUN, true);
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-        //mSwitch = (SwitchCompat) findViewById(R.id.switch1);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
-           mSwitch = (SwitchCompat) findViewById(R.id.switch1);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            mSwitch = (SwitchCompat) findViewById(R.id.switch1);
         } else {
-           mSwitch = (Switch) findViewById(R.id.switch2);
+            mSwitch = (Switch) findViewById(R.id.switch2);
         }
         rBtn_Charging = (RadioButton) findViewById(R.id.rBtn_Charging);
         rBtn_Full = (RadioButton) findViewById(R.id.rBtn_Full);
@@ -128,7 +127,8 @@ public class MainActivity extends ActionBarActivity {
         switchBar = (FrameLayout) findViewById(R.id.SwitchBar);
         brightnessBar = (SeekBar) findViewById(R.id.SeekBarBrightness);
         aboutDialogText = (TextView) findViewById(R.id.AboutContent);
-        if (aboutDialogText != null) aboutDialogText.setMovementMethod(LinkMovementMethod.getInstance());
+        if (aboutDialogText != null)
+            aboutDialogText.setMovementMethod(LinkMovementMethod.getInstance());
 
         /* Directly instantiate `manager` if the activity had previously been unexpectedly destroyed */
         if (savedInstanceState != null) {
@@ -269,7 +269,8 @@ public class MainActivity extends ActionBarActivity {
                 UpdateRadioButtons();
                 UpdateSwitch();
                 UpdateSlider();
-                if (radioGroup.isSelected()) lastSelectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+                if (radioGroup.isSelected())
+                    lastSelectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
             }
         }
     }
