@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:navigationBarColor">@color/colorPrimary</item>
         <item name="md_dark_theme">true</item>
         <item name="md_title_color">#B0BEC5</item>
         <item name="md_background_color">#FF272727</item>

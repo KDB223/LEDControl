@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#131212</color>
-    <color name="colorPrimaryDark">#FF070606</color>
+    <color name="colorPrimaryDark">#FF0E0D0D</color>
     <color name="colorAccent">#C6FF00</color>
     <color name="ripple">#bebebe</color>
     <color name="background">#39000000</color>
+    <color name="navigationBar">#90000000</color>
     <color name="colorSwitchBarHighlight">#FF2B2A2A</color>
 </resources>
