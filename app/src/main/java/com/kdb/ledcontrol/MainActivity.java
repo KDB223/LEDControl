@@ -27,9 +27,11 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.CompoundButton;
@@ -125,6 +127,7 @@ public class MainActivity extends ActionBarActivity {
         brightnessTableRow = (TableRow) findViewById(R.id.tableRowBrightness);
         textTableRow = (TableRow) findViewById(R.id.tableRowText);
         switchBar = (FrameLayout) findViewById(R.id.SwitchBar);
+        switchBar.setLongClickable(false);
         brightnessBar = (SeekBar) findViewById(R.id.SeekBarBrightness);
         aboutDialogText = (TextView) findViewById(R.id.AboutContent);
         if (aboutDialogText != null)
@@ -161,6 +164,8 @@ public class MainActivity extends ActionBarActivity {
         mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d("KDB", "onCheckedChanged");
+                switchBar.setPressed(false);
                 if (mSwitch.isChecked()) {
                     if (lastSelected != 0) {
                         manager.setChoice(lastSelected);
@@ -182,10 +187,31 @@ public class MainActivity extends ActionBarActivity {
 
         });
 
+        mSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchBar.setPressed(true);
+                switchBar.setPressed(false);
+            }
+        });
+
         switchBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mSwitch.setChecked(!mSwitch.isChecked());
+            }
+        });
+
+        switchBar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.d("KDB", "bar onTouch");
+                mSwitch.setPressed(true);
+                if (!switchBar.isPressed()){
+                    Log.d("KDB", "bar aint pressed");
+                    mSwitch.setPressed(false);
+                }
+                return false;
             }
         });
 
@@ -347,7 +373,8 @@ public class MainActivity extends ActionBarActivity {
                     .show();
         } else if (id == 5) {
             MaterialDialog dialog = new MaterialDialog.Builder(MainActivity.this)
-                    .title("About")
+                    .title(getText(R.string.dialog_about_title_html))
+                    .icon(getResources().getDrawable(R.drawable.ic_launcher))
                     .autoDismiss(false)
                     .customView(R.layout.dialog_about, true)
                     .positiveText("Rate")

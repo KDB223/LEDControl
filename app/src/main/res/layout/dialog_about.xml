@@ -6,21 +6,12 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/dialog_about_title"
-        android:id="@+id/textView4" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="by KDB"
+        android:text="@string/dialog_about_cp"
         android:id="@+id/textView5"
-        android:textSize="@dimen/md_button_textsize"
-        android:layout_above="@+id/AboutContent"
-        android:layout_toEndOf="@+id/textView4"
-        android:layout_marginBottom="2dp"
-        android:layout_marginLeft="8dp" />
+        android:textSize="12sp"
+        android:layout_marginBottom="10dp"
+        android:textStyle="italic" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -28,15 +19,14 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/dialog_about_content"
         android:id="@+id/AboutContent"
-        android:layout_below="@+id/textView4"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="8dp"
         style="@style/MD_Dark"
         android:textColor="@color/secondary_text_default_material_dark"
         android:textColorLink="@color/link_selector"
         android:clickable="true"
         android:linksClickable="true"
-        android:textSize="16dp" />
+        android:textSize="15sp"
+        android:layout_below="@+id/textView5"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -47,7 +37,7 @@
         android:layout_below="@+id/AboutContent"
         android:layout_alignParentStart="true"
         android:layout_marginTop="8dp"
-        android:textSize="12dp"
+        android:textSize="12sp"
         android:textColorLink="@color/link_selector"
         android:clickable="true"
         android:linksClickable="true" />

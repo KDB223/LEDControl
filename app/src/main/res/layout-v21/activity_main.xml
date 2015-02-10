@@ -76,7 +76,7 @@
             android:text="@string/app_description"
             android:textAppearance="?android:attr/textAppearanceMediumInverse"
             android:textColor="@color/secondary_text_default_material_dark"
-            android:textSize="14dp" />
+            android:textSize="14sp" />
     </TableRow>
 
 
@@ -108,7 +108,7 @@
                 android:text="@string/switch_label"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Large.Inverse"
                 android:textColor="#B0BEC5"
-                android:textSize="18dp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <Switch
@@ -165,7 +165,7 @@
                 android:paddingLeft="8dp"
                 android:text="@string/label_charging"
                 android:textColor="@color/primary_material_light"
-                android:textSize="16dp"
+                android:textSize="16sp"
                 android:tint="#448AFF" />
 
 
@@ -193,7 +193,7 @@
                 android:paddingLeft="8dp"
                 android:text="@string/label_charging_adapter"
                 android:textColor="@color/primary_material_light"
-                android:textSize="16dp"
+                android:textSize="16sp"
                 android:tint="#448AFF"
                 android:visibility="gone" />
 
@@ -223,7 +223,7 @@
                 android:paddingLeft="8dp"
                 android:text="@string/label_full"
                 android:textColor="@color/primary_material_light"
-                android:textSize="16dp"
+                android:textSize="16sp"
                 android:tint="#448AFF" />
 
             <ImageView
@@ -250,7 +250,7 @@
                 android:paddingLeft="8dp"
                 android:text="@string/label_charging_or_full"
                 android:textColor="@color/primary_material_light"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
             <ImageView
                 android:layout_width="fill_parent"
@@ -276,7 +276,7 @@
                 android:paddingLeft="8dp"
                 android:text="@string/label_charging_full_blink"
                 android:textColor="@color/primary_material_light"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
             <ImageView
                 android:layout_width="fill_parent"
@@ -302,7 +302,7 @@
                 android:paddingLeft="8dp"
                 android:text="@string/label_USB"
                 android:textColor="@color/primary_material_light"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
             <ImageView
                 android:layout_width="fill_parent"
@@ -328,7 +328,7 @@
                 android:paddingLeft="8dp"
                 android:text="@string/label_display"
                 android:textColor="@color/primary_material_light"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
             <ImageView
                 android:id="@+id/divider_extra2"
@@ -355,7 +355,7 @@
                 android:paddingLeft="8dp"
                 android:text="@string/label_disk"
                 android:textColor="@color/primary_material_light"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
             <ImageView
                 android:id="@+id/divider_extra3"
@@ -383,7 +383,7 @@
                 android:paddingLeft="8dp"
                 android:text="@string/label_ext"
                 android:textColor="@color/primary_material_light"
-                android:textSize="16dp"
+                android:textSize="16sp"
                 android:visibility="gone" />
         </RadioGroup>
 
