@@ -16,15 +16,13 @@
 package com.kdb.ledcontrol;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -36,16 +34,14 @@ public class LEDManager {
     private static final String pathToLEDdir = "/sys/class/leds/";
     private static final String pathToBrightness = "/sys/class/leds/charging/max_brightness";
     private static final String TAG = "LED Control";
-    public static final String BOOT_PREF_FILE_CMD = "boot_pref_cmd";
-    public static final String BOOT_PREF_FILE_BRIGHTNESS = "boot_pref_bright";
+    private String SHARED_PREF;
+    public SharedPreferences.Editor editor;
     public String cmd;
     public boolean rooted;
     private Context context;
     private Process process;
-    private FileOutputStream bootPrefOutput;
-    private FileInputStream bootPrefInput;
-    private DataOutputStream toDevice;
-    private BufferedReader fromDevice;
+    private DataOutputStream deviceInput;
+    private BufferedReader deviceOutput;
     private String DEVICE_MOTO_X = "ghost";
     private String DEVICE_MOTO_G = "falcon";
     private String DEVICE_MOTO_E = "condor";
@@ -55,6 +51,8 @@ public class LEDManager {
         this.context = context;
         process = null;
         rooted = true;
+        SHARED_PREF = context.getPackageName() + ".prefs";
+        editor = context.getSharedPreferences(SHARED_PREF, 0).edit();
         //check for root
         try {
             process = Runtime.getRuntime().exec("su");
@@ -64,8 +62,8 @@ public class LEDManager {
         }
         //confirming root only if the command "id" has "root"
         if (process != null) {
-            fromDevice = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            toDevice = new DataOutputStream(process.getOutputStream());
+            deviceOutput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            deviceInput = new DataOutputStream(process.getOutputStream());
             String user = getUser();
             if ((user == null) || (!user.contains("root"))) {
                 rooted = false;
@@ -79,14 +77,14 @@ public class LEDManager {
      *  Returns output from executing command "id"
      */
     private String getUser() {
-        if (toDevice == null || fromDevice == null) {
+        if (deviceInput == null || deviceOutput == null) {
             return null;
         }
         String user = null;
         try {
-            toDevice.writeBytes("id\n");
-            toDevice.flush();
-            user = fromDevice.readLine();
+            deviceInput.writeBytes("id\n");
+            deviceInput.flush();
+            user = deviceOutput.readLine();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -156,9 +154,9 @@ public class LEDManager {
         String output = null;
         int val = 0;
         try {
-            toDevice.writeBytes("cat " + pathToLED + "\n");
-            toDevice.flush();
-            output = fromDevice.readLine();
+            deviceInput.writeBytes("cat " + pathToLED + "\n");
+            deviceInput.flush();
+            output = deviceOutput.readLine();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -192,9 +190,9 @@ public class LEDManager {
             return 0;
         }
         try {
-            toDevice.writeBytes("cat " + pathToBrightness + "\n");
-            toDevice.flush();
-            brightness = Integer.parseInt(fromDevice.readLine());
+            deviceInput.writeBytes("cat " + pathToBrightness + "\n");
+            deviceInput.flush();
+            brightness = Integer.parseInt(deviceOutput.readLine());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -209,18 +207,12 @@ public class LEDManager {
         if (!rooted || cmd == null || !isDeviceSupported())
             return;
         try {
-            toDevice.writeBytes("echo " + cmd + " > " + pathToLED + "\n");
-            toDevice.flush();
+            deviceInput.writeBytes("echo " + cmd + " > " + pathToLED + "\n");
+            deviceInput.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
-            bootPrefOutput = context.openFileOutput(BOOT_PREF_FILE_CMD, Context.MODE_PRIVATE);
-            bootPrefOutput.write(cmd.getBytes());
-            bootPrefOutput.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        editor.putString("last_cmd", cmd).apply();
         Log.i(TAG, "Successfully set trigger: " + cmd);
     }
 
@@ -229,18 +221,12 @@ public class LEDManager {
         if (brightness != 10) brightness *= 25;
         else brightness = 255;
         try {
-            toDevice.writeBytes("echo " + Integer.toString(brightness) + " > " + pathToBrightness + "\n");
-            toDevice.flush();
+            deviceInput.writeBytes("echo " + Integer.toString(brightness) + " > " + pathToBrightness + "\n");
+            deviceInput.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
-            bootPrefOutput = context.openFileOutput(BOOT_PREF_FILE_BRIGHTNESS, Context.MODE_PRIVATE);
-            bootPrefOutput.write(Integer.toString(brightness).getBytes());
-            bootPrefOutput.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        editor.putInt("last_brightness", brightness).apply();
     }
 
     /*
@@ -248,7 +234,7 @@ public class LEDManager {
      *  Since the app only runs on Moto G, E and X, we need to check if the device is correct
      */
     public String getDevice() {
-        if (toDevice == null || fromDevice == null) return null;
+        if (deviceInput == null || deviceOutput == null) return null;
         String device = null;
         String output = Build.DEVICE;
         if (output.contains(DEVICE_MOTO_E)) device = DEVICE_MOTO_E;
@@ -259,34 +245,16 @@ public class LEDManager {
     }
 
     public void setOnBoot() {
-        String cmd = null;
-        try {
-            bootPrefInput = context.openFileInput(BOOT_PREF_FILE_CMD);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(bootPrefInput));
-            cmd = reader.readLine();
-            bootPrefInput.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        int brightness = -1;
-        try {
-            bootPrefInput = context.openFileInput(BOOT_PREF_FILE_BRIGHTNESS);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(bootPrefInput));
-            String brightness_string = reader.readLine();
-            brightness = Integer.parseInt(brightness_string);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String cmd = context.getSharedPreferences(SHARED_PREF, 0).getString("last_cmd", null);
+        int brightness = context.getSharedPreferences(SHARED_PREF, 0).getInt("last_brightness", -1);
         if (brightness != -1) {
             brightness /= 25;
             ApplyBrightness(brightness);
         }
         if (cmd != null) {
             try {
-                toDevice.writeBytes("echo " + cmd + " > " + pathToLED + "\n");
-                toDevice.flush();
+                deviceInput.writeBytes("echo " + cmd + " > " + pathToLED + "\n");
+                deviceInput.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }

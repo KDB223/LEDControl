@@ -16,7 +16,7 @@
     <string name="switch_label">MASTER SWITCH</string>
     <string name="label_disk">On Internal Storage I/O Activity</string>
     <string name="label_ext">On External Storage I/O Activity</string>
-    <string name="dialog_greet">Welcome to LED control! Tap NEXT and grant root access when prompted. App may freeze for a while, don\'t panic!</string>
+    <string name="dialog_greet">Welcome to LED control! Tap NEXT and grant root access when prompted.</string>
     <string name="hello_universal">Welcome!</string>
     <string name="dialog_title_root_failed">Failed to get root access!</string>
     <string name="dialog_content_root_failed">Looks like your device is not rooted or you denied root access. This app NEEDS root access to work.</string>
@@ -38,5 +38,5 @@
     <string name="dialog_about_footer">Any questions? Comments? Send your feedback to: <a href = "mailto:LEDControlFeedback@gmail.com">LEDControlFeedback@gmail.com</a></string>
     <string name="dialog_about_title">LED Control Pro 1.0 </string>
     <string name="dialog_about_title_html"><b>LED Control Pro</b> 1.0</string>
-    <string name="dialog_about_cp">© 2015 Krishanu Dutta Bhuyan (KDB)\n All Rights Reserved</string>
+    <string name="dialog_about_cp">© <i>2015 Krishanu Dutta Bhuyan (KDB)\n All Rights Reserved</i></string>
 </resources>

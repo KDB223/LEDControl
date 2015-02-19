@@ -103,7 +103,7 @@
         android:layout_below="@+id/tableRowText"
         android:layout_alignParentStart="true"
         android:elevation="4dp"
-        android:background="@drawable/switch_bar_background_selector"
+        android:background="@color/colorPrimary"
         android:clickable="true">
         <FrameLayout
             android:layout_width="fill_parent"
@@ -111,7 +111,7 @@
             android:layout_alignParentStart="true"
             android:id="@+id/SwitchBar"
             android:clickable="true"
-            android:background="@drawable/switch_bar_background_selector">
+            android:background="?android:attr/selectableItemBackground">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

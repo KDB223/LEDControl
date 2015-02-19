@@ -32,21 +32,20 @@ import android.util.Log;
  */
 public class BootReceiver extends BroadcastReceiver {
 
-    private LEDManager manager;
-    private String EXTRA_INFO_SHARED_PREF = "extra_info";
+    private String SHARED_PREF;
     private static final String PREF_SET_ON_BOOT = "set_on_boot";
     private static final String TAG = "LED Control";
 
     @Override
     public void onReceive(final Context context, Intent intent) {
         Log.i(TAG, "Received BOOT_COMPLETED");
-        boolean run = context.getSharedPreferences(EXTRA_INFO_SHARED_PREF, 0).getBoolean(PREF_SET_ON_BOOT, false);
+        SHARED_PREF = context.getPackageName() + ".prefs";
+        boolean run = context.getSharedPreferences(SHARED_PREF, 0).getBoolean(PREF_SET_ON_BOOT, false);
         if (run) {
             new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... params) {
-                    manager = new LEDManager(context);
-                    manager.setOnBoot();
+                    new LEDManager(context).setOnBoot();
                     return null;
                 }
 
@@ -61,7 +60,7 @@ public class BootReceiver extends BroadcastReceiver {
                             .setContentTitle(context.getString(R.string.app_name_full))
                             .setContentText(context.getString(R.string.notification_content));
                     Intent resultIntent = new Intent(context, MainActivity.class);
-                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
                     stackBuilder.addParentStack(MainActivity.class);
                     stackBuilder.addNextIntent(resultIntent);
                     PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);

@@ -18,6 +18,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -27,7 +28,6 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,6 +52,7 @@ public class MainActivity extends ActionBarActivity {
     private static final String PREF_FIRST_RUN = "first_run";
     private static final String PREF_SET_ON_BOOT = "set_on_boot";
     private static final String PREF_TIP = "tip";
+    private static final String PREF_LAST_CHOICE = "last_choice";
     private static Context context;
     public MainActivity MainActivity;
     private int Check;
@@ -81,6 +82,7 @@ public class MainActivity extends ActionBarActivity {
     private ImageView divider_extra3;
     private TableRow brightnessTableRow;
     private int lastSelectedRadioButtonId;
+    private int lastBeforeCloseRadioButtonId = -1;
     private boolean setOnBoot;
     private boolean isSupported;
     private boolean activityJustStarted = true;
@@ -88,7 +90,7 @@ public class MainActivity extends ActionBarActivity {
     private String DEVICE_MOTO_G = "falcon";
     private String DEVICE_MOTO_E = "condor";
     private String DEVICE_NEXUS_6 = "shamu";
-    private String EXTRA_INFO_SHARED_PREF = "extra_info";
+    private String SHARED_PREF;
     private ProgressDialog loadingDialog;
     private SetupLEDManager setupLEDManager = new SetupLEDManager();
     private TableRow textTableRow;
@@ -96,6 +98,8 @@ public class MainActivity extends ActionBarActivity {
     private SeekBar brightnessBar;
     private String deviceName = Build.DEVICE;
     private FrameLayout switchBar;
+    private SharedPreferences prefs;
+    private SharedPreferences.Editor prefsEditor;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -106,11 +110,32 @@ public class MainActivity extends ActionBarActivity {
         LayoutInflater inflater = LayoutInflater.from(context);
         View v = inflater.inflate(R.layout.action_bar_layout, null);
         getSupportActionBar().setCustomView(v);
+
+        if (deviceName.contains(DEVICE_MOTO_X)) {
+            rBtn_Display.setVisibility(View.GONE);
+            divider_extra2.setVisibility(View.GONE);
+            rBtn_Charging_adapter.setVisibility(View.VISIBLE);
+            divider_extra.setVisibility(View.VISIBLE);
+        } else if (deviceName.contains(DEVICE_NEXUS_6)) {
+            rBtn_Charging_adapter.setVisibility(View.VISIBLE);
+            divider_extra.setVisibility(View.VISIBLE);
+        } else if (deviceName.contains(DEVICE_MOTO_E)) {
+            rBtn_ExtIO.setVisibility(View.VISIBLE);
+            divider_extra3.setVisibility(View.VISIBLE);
+        }
+        Toast.makeText(this, deviceName, Toast.LENGTH_SHORT).show();
+
         setContentView(R.layout.activity_main);
 
-        setOnBoot = getSharedPreferences(EXTRA_INFO_SHARED_PREF, 0).getBoolean(PREF_SET_ON_BOOT, false);
-        tip = getSharedPreferences(EXTRA_INFO_SHARED_PREF, 0).getBoolean(PREF_TIP, true);
-        firstRun = getSharedPreferences(EXTRA_INFO_SHARED_PREF, 0).getBoolean(PREF_FIRST_RUN, true);
+        SHARED_PREF = getPackageName() + ".prefs";
+        prefs = getSharedPreferences(SHARED_PREF, 0);
+        prefsEditor = prefs.edit();
+
+        setOnBoot = prefs.getBoolean(PREF_SET_ON_BOOT, false);
+        tip = prefs.getBoolean(PREF_TIP, true);
+        firstRun = prefs.getBoolean(PREF_FIRST_RUN, true);
+        lastBeforeCloseRadioButtonId = prefs.getInt(PREF_LAST_CHOICE, -1);
+
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             mSwitch = (SwitchCompat) findViewById(R.id.switch1);
@@ -135,6 +160,7 @@ public class MainActivity extends ActionBarActivity {
         switchBar.setLongClickable(false);
         brightnessBar = (SeekBar) findViewById(R.id.SeekBarBrightness);
         aboutDialogText = (TextView) findViewById(R.id.AboutContent);
+
         if (aboutDialogText != null)
             aboutDialogText.setMovementMethod(LinkMovementMethod.getInstance());
 
@@ -144,32 +170,29 @@ public class MainActivity extends ActionBarActivity {
         }
         showDeviceToast();
         if (firstRun) {
-            getSharedPreferences(EXTRA_INFO_SHARED_PREF, 0).edit().putBoolean(PREF_FIRST_RUN, false).commit();
+            prefsEditor.putBoolean(PREF_FIRST_RUN, false).apply();
             showMessage(WELCOME_MESSAGE);
         } else {
             setupLEDManager.execute();
         }
 
-        if (deviceName.contains(DEVICE_MOTO_X)) {
-            rBtn_Display.setVisibility(View.GONE);
-            divider_extra2.setVisibility(View.GONE);
-            rBtn_Charging_adapter.setVisibility(View.VISIBLE);
-            divider_extra.setVisibility(View.VISIBLE);
-        } else if (deviceName.contains(DEVICE_NEXUS_6)) {
-            rBtn_Charging_adapter.setVisibility(View.VISIBLE);
-            divider_extra.setVisibility(View.VISIBLE);
-        } else if (deviceName.contains(DEVICE_MOTO_E)) {
-            rBtn_ExtIO.setVisibility(View.VISIBLE);
-            divider_extra3.setVisibility(View.VISIBLE);
-        }
-
         if (radioGroup.isSelected())
             lastSelectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+
+        if (!mSwitch.isChecked()){
+            if (lastBeforeCloseRadioButtonId != -1) {
+                lastSelected = lastBeforeCloseRadioButtonId;
+                radioGroup.check(lastBeforeCloseRadioButtonId);
+            }
+        }
 
         mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d("KDB", "onCheckedChanged");
+                if (!switchBar.isPressed()) {
+                    switchBar.setPressed(true);
+                    switchBar.setPressed(false);
+                }
                 switchBar.setPressed(false);
                 if (mSwitch.isChecked()) {
                     if (lastSelected != 0) {
@@ -177,26 +200,17 @@ public class MainActivity extends ActionBarActivity {
                         manager.Apply();
                         UpdateRadioButtons();
                     }
+                    radioGroup.setVisibility(View.VISIBLE);
                     textTableRow.setVisibility(View.INVISIBLE);
                     brightnessTableRow.setVisibility(View.VISIBLE);
-                    radioGroup.setVisibility(View.VISIBLE);
                 } else {
                     manager.setChoice(0);
                     manager.Apply();
                     lastSelected = radioGroup.getCheckedRadioButtonId();
                     radioGroup.setVisibility(View.GONE);
-                    brightnessTableRow.setVisibility(View.GONE);
+                    brightnessTableRow.setVisibility(View.INVISIBLE);
                     textTableRow.setVisibility(View.VISIBLE);
                 }
-            }
-
-        });
-
-        mSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switchBar.setPressed(true);
-                switchBar.setPressed(false);
             }
         });
 
@@ -210,11 +224,11 @@ public class MainActivity extends ActionBarActivity {
         switchBar.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Log.d("KDB", "bar onTouch");
                 mSwitch.setPressed(true);
                 if (!switchBar.isPressed()){
-                    Log.d("KDB", "bar aint pressed");
                     mSwitch.setPressed(false);
+                    switchBar.setPressed(false);
+                    return false;
                 }
                 return false;
             }
@@ -237,7 +251,7 @@ public class MainActivity extends ActionBarActivity {
                     if (!Charging()) {
                         showMessage(TIP_MESSAGE_TOAST);
                     } else if (tip) {
-                        getSharedPreferences(EXTRA_INFO_SHARED_PREF, 0).edit().putBoolean(PREF_TIP, false).commit();
+                        prefsEditor.putBoolean(PREF_TIP, false).apply();
                         tip = false;
                         showMessage(TIP_MESSAGE);
                     }
@@ -259,18 +273,28 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                //Nothing to do here
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                //Nothing to do here
             }
         });
     }
 
-    private class SetupLEDManager extends AsyncTask<Void, Void, Void> {
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (!mSwitch.isChecked()) {
+            lastBeforeCloseRadioButtonId = radioGroup.getCheckedRadioButtonId();
+            prefsEditor.putInt(PREF_LAST_CHOICE, lastBeforeCloseRadioButtonId).apply();
+        } else {
+            prefsEditor.putInt(PREF_LAST_CHOICE, 0).apply();
+        }
+    }
 
+    private class SetupLEDManager extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -327,18 +351,18 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void showMessage(int id) {
-        if (id == 0) {
+        if (id == TIP_MESSAGE) {
             new MaterialDialog.Builder(context)
                     .content(R.string.dialog_content_charging_info)
                     .positiveText(R.string.dialog_button_positive_ok)
                     .show();
-        } else if (id == 1) {
+        } else if (id == TIP_MESSAGE_TOAST) {
             Toast.makeText(context, (R.string.toast_charger_info), Toast.LENGTH_LONG).show();
-        } else if (id == 2) {
+        } else if (id == WELCOME_MESSAGE) {
             new MaterialDialog.Builder(context)
                     .title(R.string.hello_universal)
                     .content(R.string.dialog_greet)
-                    .positiveText("NEXT")
+                    .positiveText("Next")
                     .cancelable(false)
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
@@ -348,7 +372,7 @@ public class MainActivity extends ActionBarActivity {
                         }
                     })
                     .show();
-        } else if (id == 3) {
+        } else if (id == ROOT_ERROR_MESSAGE) {
             new MaterialDialog.Builder(context)
                     .title(R.string.dialog_title_root_failed)
                     .content(R.string.dialog_content_root_failed)
@@ -362,7 +386,7 @@ public class MainActivity extends ActionBarActivity {
                     })
                     .cancelable(false)
                     .show();
-        } else if (id == 4) {
+        } else if (id == DEVICE_ERROR_MESSAGE) {
             new MaterialDialog.Builder(MainActivity.this)
                     .title(R.string.dialog_title_device_error)
                     .content(R.string.dialog_content_device_error)
@@ -376,7 +400,7 @@ public class MainActivity extends ActionBarActivity {
                         }
                     })
                     .show();
-        } else if (id == 5) {
+        } else if (id == ABOUT_MESSAGE) {
             MaterialDialog dialog = new MaterialDialog.Builder(MainActivity.this)
                     .title(getText(R.string.dialog_about_title_html))
                     .icon(getResources().getDrawable(R.drawable.ic_launcher))
@@ -390,9 +414,9 @@ public class MainActivity extends ActionBarActivity {
                         public void onNeutral(MaterialDialog dialog) {
                             super.onNeutral(dialog);
                             MaterialDialog licenseDialog = new MaterialDialog.Builder(context)
-                                    .title("Licenses")
+                                    .title("Open Source Licenses")
                                     .customView(R.layout.dialog_license, false)
-                                    .positiveText(android.R.string.ok)
+                                    .positiveText("Accept")
                                     .build();
                             WebView webView = (WebView) licenseDialog.getCustomView().findViewById(R.id.webview);
                             webView.loadUrl("file:///android_asset/license.html");
@@ -499,7 +523,7 @@ public class MainActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        if (getSharedPreferences(EXTRA_INFO_SHARED_PREF, 0).getBoolean(PREF_SET_ON_BOOT, false)) {    //in English: if user has enabled the option to set on boot
+        if (setOnBoot) {
             menu.findItem(R.id.action_set_on_boot).setChecked(true);
         }
         return true;
@@ -517,10 +541,10 @@ public class MainActivity extends ActionBarActivity {
         } else if (id == R.id.action_set_on_boot) {
             if (item.isChecked()) {
                 item.setChecked(false);
-                getSharedPreferences(EXTRA_INFO_SHARED_PREF, 0).edit().putBoolean(PREF_SET_ON_BOOT, false).commit();
+                prefsEditor.putBoolean(PREF_SET_ON_BOOT, false).apply();
             } else {
-                getSharedPreferences(EXTRA_INFO_SHARED_PREF, 0).edit().putBoolean(PREF_SET_ON_BOOT, true).commit();
                 item.setChecked(true);
+                prefsEditor.putBoolean(PREF_SET_ON_BOOT, true).apply();
             }
             return true;
         }

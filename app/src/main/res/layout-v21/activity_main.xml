@@ -86,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/tableRowText"
-        android:background="@drawable/grey_ripple"
+        android:background="@color/colorPrimary"
         android:clickable="true"
         android:elevation="4dp"
         android:stretchColumns="0">
@@ -96,7 +96,7 @@
             android:layout_width="fill_parent"
             android:layout_height="52dp"
             android:layout_alignParentStart="true"
-            android:background="@drawable/grey_ripple"
+            android:background="?android:attr/selectableItemBackground"
             android:clickable="true">
 
             <TextView
