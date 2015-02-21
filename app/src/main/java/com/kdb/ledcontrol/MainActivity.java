@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -123,7 +124,6 @@ public class MainActivity extends ActionBarActivity {
             rBtn_ExtIO.setVisibility(View.VISIBLE);
             divider_extra3.setVisibility(View.VISIBLE);
         }
-        Toast.makeText(this, deviceName, Toast.LENGTH_SHORT).show();
 
         setContentView(R.layout.activity_main);
 
@@ -168,10 +168,10 @@ public class MainActivity extends ActionBarActivity {
         if (savedInstanceState != null) {
             manager = new LEDManager(MainActivity.this);
         }
-        showDeviceToast();
         if (firstRun) {
             prefsEditor.putBoolean(PREF_FIRST_RUN, false).apply();
             showMessage(WELCOME_MESSAGE);
+            showDeviceToast();
         } else {
             setupLEDManager.execute();
         }
@@ -248,7 +248,7 @@ public class MainActivity extends ActionBarActivity {
                     tRadioButton.setTypeface(null, Typeface.BOLD);
                 }
                 if (mSwitch.isChecked()) {
-                    if (!Charging()) {
+                    if (!isCharging()) {
                         showMessage(TIP_MESSAGE_TOAST);
                     } else if (tip) {
                         prefsEditor.putBoolean(PREF_TIP, false).apply();
@@ -320,7 +320,6 @@ public class MainActivity extends ActionBarActivity {
                 showMessage(ROOT_ERROR_MESSAGE);
             } else {
                 Check = manager.checkState();
-                showDeviceToast();
                 UpdateRadioButtons();
                 UpdateSwitch();
                 UpdateSlider();
@@ -339,6 +338,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void showDeviceToast() {
+        Log.d("KDB", "called showDeviceToast");
         if (deviceName.contains(DEVICE_MOTO_E)) {
             Toast.makeText(context, R.string.device_moto_e, Toast.LENGTH_SHORT).show();
         } else if (deviceName.contains(DEVICE_MOTO_G)) {
@@ -508,7 +508,7 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    private boolean Charging() {
+    private boolean isCharging() {
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = context.registerReceiver(null, intentFilter);
 

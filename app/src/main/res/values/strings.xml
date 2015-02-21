@@ -34,7 +34,7 @@
     <string name="dialog_getting_root_access">Requesting Root Access…</string>
     <string name="notification_content">Successfully set LED trigger on boot!</string>
     <string name="share_text">What\'s up? \nCheck out this cool app I installed to jazz out my phone\'s LED:\nhttps://play.google.com/store/apps/details?id=com.kdb.ledcontrol</string>
-    <string name="dialog_about_content">An app to set kernel specific charging triggers for your device\'s LED.\n\nThank you for purchasing LED Control Pro. You\'re awesome!\nPlease leave a rating on Play Store if you found this app useful.\n\nSupport: <a href="http://forum.xda-developers.com/android/apps-games/app-free-KDB-led-control">XDA</a>\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Source: <a href="https://www.github.com/LED-Control">Github</a></string>
+    <string name="dialog_about_content">An app to set kernel specific charging triggers for your device\'s LED.\n\nThank you for purchasing LED Control Pro. You\'re awesome!\nPlease leave a rating on Play Store if you found this app useful.\n\nSupport: <a href="http://forum.xda-developers.com/android/apps-games/4-3-led-control-motorola-devices-t3036823">XDA</a>\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Source: <a href="https://www.github.com/LED-Control">Github</a></string>
     <string name="dialog_about_footer">Any questions? Comments? Send your feedback to: <a href = "mailto:LEDControlFeedback@gmail.com">LEDControlFeedback@gmail.com</a></string>
     <string name="dialog_about_title">LED Control Pro 1.0 </string>
     <string name="dialog_about_title_html"><b>LED Control Pro</b> 1.0</string>
