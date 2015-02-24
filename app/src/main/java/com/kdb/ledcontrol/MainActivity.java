@@ -54,6 +54,18 @@ public class MainActivity extends ActionBarActivity {
     private static final String PREF_SET_ON_BOOT = "set_on_boot";
     private static final String PREF_TIP = "tip";
     private static final String PREF_LAST_CHOICE = "last_choice";
+    public final int TRIGGER_BATTERY_CHARGING = 1;
+    public final int TRIGGER_BATTERY_FULL = 2;
+    public final int TRIGGER_BATTERY_CHARGING_OR_FULL = 3;
+    public final int TRIGGER_BATTERY_CHARGING_BLINKING_OR_FULL = 4;
+    public final int TRIGGER_USB = 5;
+    public final int TRIGGER_BKL_or_MOTOX_ADAPTER = 6;
+    public final int TRIGGER_DISK_IO = 7;
+    public final int TRIGGER_EXT_IO = 8;
+    public final int TRIGGER_BLUETOOTH = 9;
+    public final int TRIGGER_TORCH = 10;
+    public final int TRIGGER_FLASH = 11;
+    public final int TRIGGER_ALWAYS = 12;
     private static Context context;
     public MainActivity MainActivity;
     private int Check;
@@ -77,10 +89,12 @@ public class MainActivity extends ActionBarActivity {
     private RadioButton rBtn_Display;
     private RadioButton rBtn_DiskIO;
     private RadioButton rBtn_ExtIO;
+    private RadioButton rBtn_Bluetooth;
+    private RadioButton rBtn_Flash;
+    private RadioButton rBtn_Torch;
+    private RadioButton rBtn_Always;
     private CompoundButton mSwitch;
-    private ImageView divider_extra;
-    private ImageView divider_extra2;
-    private ImageView divider_extra3;
+    private ImageView divider_bluetooth, divider_flash, divider_torch, divider_always, divider_ext, divider_adapter, divider_display;
     private TableRow brightnessTableRow;
     private int lastSelectedRadioButtonId;
     private int lastBeforeCloseRadioButtonId = -1;
@@ -112,36 +126,8 @@ public class MainActivity extends ActionBarActivity {
         View v = inflater.inflate(R.layout.action_bar_layout, null);
         getSupportActionBar().setCustomView(v);
 
-        if (deviceName.contains(DEVICE_MOTO_X)) {
-            rBtn_Display.setVisibility(View.GONE);
-            divider_extra2.setVisibility(View.GONE);
-            rBtn_Charging_adapter.setVisibility(View.VISIBLE);
-            divider_extra.setVisibility(View.VISIBLE);
-        } else if (deviceName.contains(DEVICE_NEXUS_6)) {
-            rBtn_Charging_adapter.setVisibility(View.VISIBLE);
-            divider_extra.setVisibility(View.VISIBLE);
-        } else if (deviceName.contains(DEVICE_MOTO_E)) {
-            rBtn_ExtIO.setVisibility(View.VISIBLE);
-            divider_extra3.setVisibility(View.VISIBLE);
-        }
-
         setContentView(R.layout.activity_main);
-
-        SHARED_PREF = getPackageName() + ".prefs";
-        prefs = getSharedPreferences(SHARED_PREF, 0);
-        prefsEditor = prefs.edit();
-
-        setOnBoot = prefs.getBoolean(PREF_SET_ON_BOOT, false);
-        tip = prefs.getBoolean(PREF_TIP, true);
-        firstRun = prefs.getBoolean(PREF_FIRST_RUN, true);
-        lastBeforeCloseRadioButtonId = prefs.getInt(PREF_LAST_CHOICE, -1);
-
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            mSwitch = (SwitchCompat) findViewById(R.id.switch1);
-        } else {
-            mSwitch = (Switch) findViewById(R.id.switch2);
-        }
         rBtn_Charging = (RadioButton) findViewById(R.id.rBtn_Charging);
         rBtn_Full = (RadioButton) findViewById(R.id.rBtn_Full);
         rBtn_Charging_or_full = (RadioButton) findViewById(R.id.rBtn_Charging_or_full);
@@ -151,15 +137,66 @@ public class MainActivity extends ActionBarActivity {
         rBtn_Charging_adapter = (RadioButton) findViewById(R.id.rBtn_Charging_adapter);
         rBtn_DiskIO = (RadioButton) findViewById(R.id.rBtn_Disk_IO);
         rBtn_ExtIO = (RadioButton) findViewById(R.id.rBtn_Ext_IO);
-        divider_extra = (ImageView) findViewById(R.id.divider_extra);
-        divider_extra2 = (ImageView) findViewById(R.id.divider_extra2);
-        divider_extra3 = (ImageView) findViewById(R.id.divider_extra3);
+        rBtn_Always = (RadioButton) findViewById(R.id.rBtn_Always_on);
+        rBtn_Flash = (RadioButton) findViewById(R.id.rBtn_Cam_flash);
+        rBtn_Torch = (RadioButton) findViewById(R.id.rBtn_Torch);
+        rBtn_Bluetooth = (RadioButton) findViewById(R.id.rBtn_Bluetooth);
+        divider_adapter = (ImageView) findViewById(R.id.divider_below_adapter);
+        divider_always = (ImageView) findViewById(R.id.divider_below_always);
+        divider_bluetooth = (ImageView) findViewById(R.id.divider_below_bluetooth);
+        divider_ext = (ImageView) findViewById(R.id.divider_below_ExtIO);
+        divider_flash = (ImageView) findViewById(R.id.divider_below_flash);
+        divider_torch = (ImageView) findViewById(R.id.divider_below_torch);
+        divider_display = (ImageView) findViewById(R.id.divider_below_display);
         brightnessTableRow = (TableRow) findViewById(R.id.tableRowBrightness);
         textTableRow = (TableRow) findViewById(R.id.tableRowText);
         switchBar = (FrameLayout) findViewById(R.id.SwitchBar);
         switchBar.setLongClickable(false);
         brightnessBar = (SeekBar) findViewById(R.id.SeekBarBrightness);
         aboutDialogText = (TextView) findViewById(R.id.AboutContent);
+
+        if (deviceName.contains(DEVICE_MOTO_X)) {
+            rBtn_Charging_adapter.setVisibility(View.VISIBLE);
+            divider_adapter.setVisibility(View.VISIBLE);
+        } else if (deviceName.contains(DEVICE_NEXUS_6)) {
+            rBtn_Charging_adapter.setVisibility(View.VISIBLE);
+            divider_adapter.setVisibility(View.VISIBLE);
+            rBtn_Always.setVisibility(View.VISIBLE);
+            divider_always.setVisibility(View.VISIBLE);
+            rBtn_Display.setVisibility(View.VISIBLE);
+            divider_display.setVisibility(View.VISIBLE);
+            rBtn_Bluetooth.setVisibility(View.VISIBLE);
+            divider_bluetooth.setVisibility(View.VISIBLE);
+        } else if (deviceName.contains(DEVICE_MOTO_E)) {
+            rBtn_Display.setVisibility(View.VISIBLE);
+            divider_display.setVisibility(View.VISIBLE);
+            rBtn_ExtIO.setVisibility(View.VISIBLE);
+            divider_ext.setVisibility(View.VISIBLE);
+        } else if (deviceName.contains(DEVICE_MOTO_G)) {
+            rBtn_Display.setVisibility(View.VISIBLE);
+            divider_display.setVisibility(View.VISIBLE);
+            rBtn_Flash.setVisibility(View.VISIBLE);
+            divider_flash.setVisibility(View.VISIBLE);
+            rBtn_Torch.setVisibility(View.VISIBLE);
+            divider_torch.setVisibility(View.VISIBLE);
+        }
+
+
+        SHARED_PREF = getPackageName() + ".prefs";
+        prefs = getSharedPreferences(SHARED_PREF, 0);
+        prefsEditor = prefs.edit();
+
+        tip = prefs.getBoolean(PREF_TIP, true);
+        firstRun = prefs.getBoolean(PREF_FIRST_RUN, true);
+        lastBeforeCloseRadioButtonId = prefs.getInt(PREF_LAST_CHOICE, -1);
+        setOnBoot = prefs.getBoolean(PREF_SET_ON_BOOT, false);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            mSwitch = (SwitchCompat) findViewById(R.id.switch1);
+        } else {
+            mSwitch = (Switch) findViewById(R.id.switch2);
+        }
+
 
         if (aboutDialogText != null)
             aboutDialogText.setMovementMethod(LinkMovementMethod.getInstance());
@@ -179,7 +216,7 @@ public class MainActivity extends ActionBarActivity {
         if (radioGroup.isSelected())
             lastSelectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
 
-        if (!mSwitch.isChecked()){
+        if (!mSwitch.isChecked()) {
             if (lastBeforeCloseRadioButtonId != -1) {
                 lastSelected = lastBeforeCloseRadioButtonId;
                 radioGroup.check(lastBeforeCloseRadioButtonId);
@@ -225,7 +262,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 mSwitch.setPressed(true);
-                if (!switchBar.isPressed()){
+                if (!switchBar.isPressed()) {
                     mSwitch.setPressed(false);
                     switchBar.setPressed(false);
                     return false;
@@ -456,46 +493,40 @@ public class MainActivity extends ActionBarActivity {
             RadioButton BTN = null;
             if (!isSupported) {
                 showMessage(DEVICE_ERROR_MESSAGE);
-            } else if (newCheck == 1) {
+            } else if (newCheck == TRIGGER_BATTERY_CHARGING) {
                 BTN = rBtn_Charging;
-                BTN.setChecked(true);
-                BTN.setTypeface(null, Typeface.BOLD);
-            } else if (newCheck == 2) {
+            } else if (newCheck == TRIGGER_BATTERY_FULL) {
                 BTN = rBtn_Full;
-                BTN.setChecked(true);
-                BTN.setTypeface(null, Typeface.BOLD);
-            } else if (newCheck == 3) {
+            } else if (newCheck == TRIGGER_BATTERY_CHARGING_OR_FULL) {
                 BTN = rBtn_Charging_or_full;
-                BTN.setChecked(true);
-                BTN.setTypeface(null, Typeface.BOLD);
-            } else if (newCheck == 4) {
+            } else if (newCheck == TRIGGER_BATTERY_CHARGING_BLINKING_OR_FULL) {
                 BTN = rBtn_Charging_or_full_blink;
-                BTN.setChecked(true);
-                BTN.setTypeface(null, Typeface.BOLD);
-            } else if (newCheck == 5) {
+            } else if (newCheck == TRIGGER_USB) {
                 BTN = rBtn_USB;
-                BTN.setChecked(true);
-                BTN.setTypeface(null, Typeface.BOLD);
-            } else if (newCheck == 6) {
+            } else if (newCheck == TRIGGER_BKL_or_MOTOX_ADAPTER) {
                 if (deviceName.contains(DEVICE_MOTO_X)) {
                     BTN = rBtn_Charging_adapter;
-                    BTN.setChecked(true);
-                    BTN.setTypeface(null, Typeface.BOLD);
                 } else {
                     BTN = rBtn_Display;
-                    BTN.setChecked(true);
-                    BTN.setTypeface(null, Typeface.BOLD);
                 }
-            } else if (newCheck == 7) {
+            } else if (newCheck == TRIGGER_DISK_IO) {
                 BTN = rBtn_DiskIO;
-                BTN.setChecked(true);
-                BTN.setTypeface(null, Typeface.BOLD);
-            } else if (newCheck == 8) {
+            } else if (newCheck == TRIGGER_EXT_IO) {
                 BTN = rBtn_ExtIO;
+            } else if (newCheck == TRIGGER_BLUETOOTH) {
+                BTN = rBtn_Bluetooth;
+            } else if (newCheck == TRIGGER_FLASH) {
+                BTN = rBtn_Flash;
+            } else if (newCheck == TRIGGER_ALWAYS) {
+                BTN = rBtn_Always;
+            } else if (newCheck == TRIGGER_TORCH) {
+                BTN = rBtn_Torch;
+            }
+            if (BTN != null) {
                 BTN.setChecked(true);
                 BTN.setTypeface(null, Typeface.BOLD);
+                lastSelectedRadioButtonId = BTN.getId();
             }
-            if (BTN != null) lastSelectedRadioButtonId = BTN.getId();
         }
     }
 

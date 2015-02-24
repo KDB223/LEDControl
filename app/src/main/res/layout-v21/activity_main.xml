@@ -198,7 +198,7 @@
                 android:visibility="gone" />
 
             <ImageView
-                android:id="@+id/divider_extra"
+                android:id="@+id/divider_below_adapter"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -317,6 +317,36 @@
                 android:src="@color/ripple_material_light" />
 
             <RadioButton
+                android:id="@+id/rBtn_Bluetooth"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="2dp"
+                android:animateLayoutChanges="true"
+                android:buttonTintMode="src_atop"
+                android:checked="false"
+                android:clickable="true"
+                android:paddingLeft="8dp"
+                android:text="@string/label_bluetooth"
+                android:textColor="@color/primary_material_light"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginRight="8dp"
+                android:paddingBottom="2dp"
+                android:paddingEnd="2dp"
+                android:paddingRight="2dp"
+                android:paddingStart="2dp"
+                android:paddingTop="2dp"
+                android:src="@color/ripple_material_light"
+                android:id="@+id/divider_below_bluetooth"
+                android:visibility="gone" />
+
+            <RadioButton
                 android:id="@+id/rBtn_Display"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
@@ -328,10 +358,11 @@
                 android:paddingLeft="8dp"
                 android:text="@string/label_display"
                 android:textColor="@color/primary_material_light"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:visibility="gone" />
 
             <ImageView
-                android:id="@+id/divider_extra2"
+                android:id="@+id/divider_below_display"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -340,7 +371,8 @@
                 android:paddingEnd="2dp"
                 android:paddingStart="2dp"
                 android:paddingTop="2dp"
-                android:src="@color/ripple_material_light" />
+                android:src="@color/ripple_material_light"
+                android:visibility="gone" />
 
             <RadioButton
                 android:id="@+id/rBtn_Disk_IO"
@@ -358,7 +390,7 @@
                 android:textSize="16sp" />
 
             <ImageView
-                android:id="@+id/divider_extra3"
+                android:id="@+id/divider_below_DiskIO"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -385,6 +417,104 @@
                 android:textColor="@color/primary_material_light"
                 android:textSize="16sp"
                 android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/divider_below_ExtIO"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginRight="8dp"
+                android:paddingBottom="2dp"
+                android:paddingEnd="2dp"
+                android:paddingStart="2dp"
+                android:paddingTop="2dp"
+                android:src="@color/ripple_material_light"
+                android:visibility="gone" />
+
+            <RadioButton
+                android:id="@+id/rBtn_Always_on"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="2dp"
+                android:animateLayoutChanges="true"
+                android:checked="false"
+                android:clickable="true"
+                android:paddingLeft="8dp"
+                android:text="@string/label_always_on"
+                android:textColor="@color/primary_material_light"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/divider_below_always"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginRight="8dp"
+                android:paddingBottom="2dp"
+                android:paddingEnd="2dp"
+                android:paddingStart="2dp"
+                android:paddingTop="2dp"
+                android:src="@color/ripple_material_light"
+                android:visibility="gone" />
+
+            <RadioButton
+                android:id="@+id/rBtn_Torch"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="2dp"
+                android:animateLayoutChanges="true"
+                android:checked="false"
+                android:clickable="true"
+                android:paddingLeft="8dp"
+                android:text="@string/label_torch"
+                android:textColor="@color/primary_material_light"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/divider_below_torch"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginRight="8dp"
+                android:paddingBottom="2dp"
+                android:paddingEnd="2dp"
+                android:paddingStart="2dp"
+                android:paddingTop="2dp"
+                android:src="@color/ripple_material_light"
+                android:visibility="gone" />
+
+            <RadioButton
+                android:id="@+id/rBtn_Cam_flash"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="2dp"
+                android:animateLayoutChanges="true"
+                android:checked="false"
+                android:clickable="true"
+                android:paddingLeft="8dp"
+                android:text="@string/label_flash"
+                android:textColor="@color/primary_material_light"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/divider_below_flash"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginRight="8dp"
+                android:paddingBottom="2dp"
+                android:paddingEnd="2dp"
+                android:paddingStart="2dp"
+                android:paddingTop="2dp"
+                android:src="@color/ripple_material_light"
+                android:visibility="gone" />
+
         </RadioGroup>
 
     </ScrollView>

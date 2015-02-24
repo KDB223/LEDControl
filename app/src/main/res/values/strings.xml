@@ -12,6 +12,10 @@
     <string name="label_charging_or_full">While Charging or Battery Full</string>
     <string name="label_charging_full_blink">While Charging (Blinking) or Battery Full</string>
     <string name="label_USB">When USB Connected</string>
+    <string name="label_bluetooth">When Bluetooth enabled</string>
+    <string name="label_always_on">Always on</string>
+    <string name="label_torch">When flashlight is on</string>
+    <string name="label_flash">When camera flash is on</string>
     <string name="label_display">When Display is On</string>
     <string name="switch_label">MASTER SWITCH</string>
     <string name="label_disk">On Internal Storage I/O Activity</string>

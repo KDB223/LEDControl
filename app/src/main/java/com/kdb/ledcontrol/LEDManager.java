@@ -46,6 +46,18 @@ public class LEDManager {
     private String DEVICE_MOTO_G = "falcon";
     private String DEVICE_MOTO_E = "condor";
     private String DEVICE_NEXUS_6 = "shamu";
+    public final int TRIGGER_BATTERY_CHARGING = 1;
+    public final int TRIGGER_BATTERY_FULL = 2;
+    public final int TRIGGER_BATTERY_CHARGING_OR_FULL = 3;
+    public final int TRIGGER_BATTERY_CHARGING_BLINKING_OR_FULL = 4;
+    public final int TRIGGER_USB = 5;
+    public final int TRIGGER_BKL_or_MOTOX_ADAPTER = 6;
+    public final int TRIGGER_DISK_IO = 7;
+    public final int TRIGGER_EXT_IO = 8;
+    public final int TRIGGER_BLUETOOTH = 9;
+    public final int TRIGGER_TORCH = 10;
+    public final int TRIGGER_FLASH = 11;
+    public final int TRIGGER_ALWAYS = 12;
 
     public LEDManager(Context context) {
         this.context = context;
@@ -132,6 +144,16 @@ public class LEDManager {
             } else {
                 cmd = "pm89221-dc-online";
             }
+        } else if (Choice == R.id.rBtn_Bluetooth) {
+            if (getDevice().equals(DEVICE_NEXUS_6)) {
+                cmd = "rkfill0";
+            } else cmd = "rkfill1";
+        } else if (Choice == R.id.rBtn_Always_on) {
+            cmd = "default-on";
+        } else if (Choice == R.id.rBtn_Cam_flash) {
+            cmd = "flash0_trigger";
+        } else if (Choice == R.id.rBtn_Torch) {
+            cmd = "torch_trigger";
         }
     }
 
@@ -156,28 +178,36 @@ public class LEDManager {
         try {
             deviceInput.writeBytes("cat " + pathToLED + "\n");
             deviceInput.flush();
-            output = deviceOutput.readLine();
+            output = this.deviceOutput.readLine();
         } catch (IOException e) {
             e.printStackTrace();
         }
         if (output == null)
             return -1;
-        if (output.contains("[battery-charging]"))
-            val = 1;
-        if (output.contains("[battery-full]"))
-            val = 2;
-        if (output.contains("[battery-charging-or-full]"))
-            val = 3;
-        if (output.contains("[battery-charging-blink-full-solid]") || output.contains("[heartbeat]"))
-            val = 4;
-        if (output.contains("[usb-online]"))
-            val = 5;
-        if (output.contains("[bkl-trigger]") || output.contains("[pm8921-dc-online]"))
-            val = 6;
-        if (output.contains("[mmc0]"))
-            val = 7;
-        if (output.contains("[mmc1]"))
-            val = 8;
+        else if (output.contains("[battery-charging]"))
+            val = TRIGGER_BATTERY_CHARGING;
+        else if (output.contains("[battery-full]"))
+            val = TRIGGER_BATTERY_FULL;
+        else if (output.contains("[battery-charging-or-full]"))
+            val = TRIGGER_BATTERY_CHARGING_OR_FULL;
+        else if (output.contains("[battery-charging-blink-full-solid]") || output.contains("[heartbeat]"))
+            val = TRIGGER_BATTERY_CHARGING_BLINKING_OR_FULL;
+        else if (output.contains("[usb-online]"))
+            val = TRIGGER_USB;
+        else if (output.contains("[bkl-trigger]") || output.contains("[pm8921-dc-online]") || output.contains("[backlight]"))
+            val = TRIGGER_BKL_or_MOTOX_ADAPTER;
+        else if (output.contains("[mmc0]"))
+            val = TRIGGER_DISK_IO;
+        else if (output.contains("[mmc1]"))
+            val = TRIGGER_EXT_IO;
+        else if (output.contains("[rkfill0]") || output.contains("[rkfill1]"))
+            val = TRIGGER_BLUETOOTH;
+        else if (output.contains("[torch_trigger]"))
+            val = TRIGGER_TORCH;
+        else if (output.contains("[flash0_trigger]"))
+            val = TRIGGER_FLASH;
+        else if (output.contains("[default-on]"))
+            val = TRIGGER_ALWAYS;
         return val;
     }
 

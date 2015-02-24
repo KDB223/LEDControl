@@ -8,8 +8,8 @@ android {
         applicationId "com.kdb.ledcontrol"
         minSdkVersion 17
         targetSdkVersion 21
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName "1.1"
     }
     buildTypes {
         release {
