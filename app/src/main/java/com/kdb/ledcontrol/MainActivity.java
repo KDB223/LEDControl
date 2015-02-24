@@ -258,19 +258,6 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        switchBar.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mSwitch.setPressed(true);
-                if (!switchBar.isPressed()) {
-                    mSwitch.setPressed(false);
-                    switchBar.setPressed(false);
-                    return false;
-                }
-                return false;
-            }
-        });
-
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {

@@ -130,7 +130,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|end"
                 android:checked="false"
-                android:clickable="true"
+                android:clickable="false"
                 app:splitTrack="false"
                 android:layout_marginRight="16dp" />
         </FrameLayout>
