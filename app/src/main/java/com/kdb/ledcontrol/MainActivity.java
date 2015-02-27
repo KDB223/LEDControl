@@ -54,6 +54,8 @@ public class MainActivity extends ActionBarActivity {
     private static final String PREF_SET_ON_BOOT = "set_on_boot";
     private static final String PREF_TIP = "tip";
     private static final String PREF_LAST_CHOICE = "last_choice";
+    private static final String PREF_LAUNCH_COUNT = "count";
+    private static final String PREF_SHOW_NOTIF = "show_notif";
     public final int TRIGGER_BATTERY_CHARGING = 1;
     public final int TRIGGER_BATTERY_FULL = 2;
     public final int TRIGGER_BATTERY_CHARGING_OR_FULL = 3;
@@ -76,8 +78,10 @@ public class MainActivity extends ActionBarActivity {
     private int ROOT_ERROR_MESSAGE = 3;
     private int DEVICE_ERROR_MESSAGE = 4;
     private int ABOUT_MESSAGE = 5;
+    private int RATE_MESSAGE = 6;
     public boolean tip = true;
     public boolean firstRun;
+    private int count;
     private LEDManager manager;
     private RadioGroup radioGroup;
     private RadioButton rBtn_Charging;
@@ -99,12 +103,15 @@ public class MainActivity extends ActionBarActivity {
     private int lastSelectedRadioButtonId;
     private int lastBeforeCloseRadioButtonId = -1;
     private boolean setOnBoot;
+    private boolean showNotif;
     private boolean isSupported;
     private boolean activityJustStarted = true;
     private String DEVICE_MOTO_X = "ghost";
     private String DEVICE_MOTO_G = "falcon";
     private String DEVICE_MOTO_E = "condor";
     private String DEVICE_NEXUS_6 = "shamu";
+    private String DEVICE_MAXX = "obake-maxx";
+    private String DEVICE_ULTRA = "obake";
     private String SHARED_PREF;
     private ProgressDialog loadingDialog;
     private SetupLEDManager setupLEDManager = new SetupLEDManager();
@@ -115,6 +122,7 @@ public class MainActivity extends ActionBarActivity {
     private FrameLayout switchBar;
     private SharedPreferences prefs;
     private SharedPreferences.Editor prefsEditor;
+    private Menu optionsMenu;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -155,7 +163,7 @@ public class MainActivity extends ActionBarActivity {
         brightnessBar = (SeekBar) findViewById(R.id.SeekBarBrightness);
         aboutDialogText = (TextView) findViewById(R.id.AboutContent);
 
-        if (deviceName.contains(DEVICE_MOTO_X)) {
+        if (deviceName.contains(DEVICE_MOTO_X)||deviceName.contains(DEVICE_MAXX)||deviceName.contains(DEVICE_ULTRA)) {
             rBtn_Charging_adapter.setVisibility(View.VISIBLE);
             divider_adapter.setVisibility(View.VISIBLE);
         } else if (deviceName.contains(DEVICE_NEXUS_6)) {
@@ -186,10 +194,19 @@ public class MainActivity extends ActionBarActivity {
         prefs = getSharedPreferences(SHARED_PREF, 0);
         prefsEditor = prefs.edit();
 
+        showNotif = prefs.getBoolean(PREF_SHOW_NOTIF, true);
         tip = prefs.getBoolean(PREF_TIP, true);
         firstRun = prefs.getBoolean(PREF_FIRST_RUN, true);
         lastBeforeCloseRadioButtonId = prefs.getInt(PREF_LAST_CHOICE, -1);
         setOnBoot = prefs.getBoolean(PREF_SET_ON_BOOT, false);
+        count = prefs.getInt(PREF_LAUNCH_COUNT, 0);
+
+        if (count != -1 && count > 3){
+            showMessage(RATE_MESSAGE);
+        } else if (count != -1) {
+            count++;
+            prefsEditor.putInt(PREF_LAUNCH_COUNT, count).apply();
+        }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             mSwitch = (SwitchCompat) findViewById(R.id.switch1);
@@ -371,6 +388,10 @@ public class MainActivity extends ActionBarActivity {
             Toast.makeText(context, R.string.device_moto_x, Toast.LENGTH_SHORT).show();
         } else if (deviceName.contains(DEVICE_NEXUS_6)) {
             Toast.makeText(context, R.string.device_nexus_6, Toast.LENGTH_SHORT).show();
+        } else if (deviceName.contains(DEVICE_MAXX)) {
+            Toast.makeText(context, R.string.device_maxx, Toast.LENGTH_SHORT).show();
+        } else if (deviceName.contains(DEVICE_ULTRA)) {
+            Toast.makeText(context, R.string.device_ultra, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -470,6 +491,28 @@ public class MainActivity extends ActionBarActivity {
             body.setMovementMethod(LinkMovementMethod.getInstance());
             footer.setMovementMethod(LinkMovementMethod.getInstance());
             dialog.show();
+        } else if (id == RATE_MESSAGE) {
+            new MaterialDialog.Builder(MainActivity.this)
+                .title("Enjoying LED Control Pro?")
+                .content("Looks like you've been using this app for quite some time now! Do you like it/dislike it?\nPlease take a moment to rate this app on Google Play and support the developer.")
+                .positiveText("Rate")
+                .neutralText("Not Now")
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        super.onPositive(dialog);
+                        Uri playURL = Uri.parse("market://details?id=" + context.getPackageName());
+                        startActivity(new Intent(Intent.ACTION_VIEW, playURL));
+                        prefsEditor.putInt(PREF_LAUNCH_COUNT, -1).apply();
+                    }
+
+                    @Override
+                    public void onNeutral(MaterialDialog dialog) {
+                        super.onNegative(dialog);
+                        prefsEditor.putInt(PREF_LAUNCH_COUNT, 0).apply();
+                    }
+                })
+                .show();
         }
     }
 
@@ -541,9 +584,16 @@ public class MainActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem notifItem = menu.findItem(R.id.action_show_notif);
+        MenuItem setOnBootItem = menu.findItem(R.id.action_set_on_boot);
         if (setOnBoot) {
-            menu.findItem(R.id.action_set_on_boot).setChecked(true);
+            setOnBootItem.setChecked(true);
+            notifItem.setEnabled(true);
         }
+        if (showNotif) {
+            notifItem.setChecked(true);
+        } else notifItem.setChecked(false);
+        this.optionsMenu = menu;
         return true;
     }
 
@@ -557,13 +607,13 @@ public class MainActivity extends ActionBarActivity {
             showMessage(ABOUT_MESSAGE);
             return true;
         } else if (id == R.id.action_set_on_boot) {
-            if (item.isChecked()) {
-                item.setChecked(false);
-                prefsEditor.putBoolean(PREF_SET_ON_BOOT, false).apply();
-            } else {
-                item.setChecked(true);
-                prefsEditor.putBoolean(PREF_SET_ON_BOOT, true).apply();
-            }
+            optionsMenu.findItem(R.id.action_show_notif).setEnabled(!item.isChecked());
+            item.setChecked(!item.isChecked());
+            prefsEditor.putBoolean(PREF_SET_ON_BOOT, item.isChecked()).apply();
+            return true;
+        } else if (id == R.id.action_show_notif) {
+            item.setChecked(!item.isChecked());
+            prefsEditor.putBoolean(PREF_SHOW_NOTIF, item.isChecked()).apply();
             return true;
         }
         return super.onOptionsItemSelected(item);

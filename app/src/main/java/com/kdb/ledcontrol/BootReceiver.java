@@ -48,26 +48,6 @@ public class BootReceiver extends BroadcastReceiver {
                     new LEDManager(context).setOnBoot();
                     return null;
                 }
-
-                @Override
-                protected void onPostExecute(Void aVoid) {
-                    super.onPostExecute(aVoid);
-                    Log.i(TAG, "LED trigger applied on boot");
-                    Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                            .setSmallIcon(R.drawable.ic_stat_notification)
-                            .setLargeIcon(largeIcon)
-                            .setContentTitle(context.getString(R.string.app_name_full))
-                            .setContentText(context.getString(R.string.notification_content));
-                    Intent resultIntent = new Intent(context, MainActivity.class);
-                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-                    stackBuilder.addParentStack(MainActivity.class);
-                    stackBuilder.addNextIntent(resultIntent);
-                    PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                    builder.setContentIntent(resultPendingIntent);
-                    NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                    mNotificationManager.notify(0, builder.build());
-                }
             }.execute();
         }
     }

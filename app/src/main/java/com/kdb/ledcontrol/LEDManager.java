@@ -15,9 +15,16 @@
 
 package com.kdb.ledcontrol;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -32,10 +39,14 @@ import java.io.InputStreamReader;
 public class LEDManager {
     private static final String pathToLED = "/sys/class/leds/charging/trigger";
     private static final String pathToLEDdir = "/sys/class/leds/";
+    private static String devicePathToLED = null;
+    private static String devicePathToBrightness = null;
+    private static final String getPathToLEDdirAlter = "/sys/class/pm8xx-led/leds";
     private static final String pathToBrightness = "/sys/class/leds/charging/max_brightness";
     private static final String TAG = "LED Control";
     private String SHARED_PREF;
-    public SharedPreferences.Editor editor;
+    public SharedPreferences prefs;
+    public SharedPreferences.Editor prefsEditor;
     public String cmd;
     public boolean rooted;
     private Context context;
@@ -46,6 +57,8 @@ public class LEDManager {
     private String DEVICE_MOTO_G = "falcon";
     private String DEVICE_MOTO_E = "condor";
     private String DEVICE_NEXUS_6 = "shamu";
+    private String DEVICE_MAXX = "obake-maxx";
+    private String DEVICE_ULTRA = "obake";
     public final int TRIGGER_BATTERY_CHARGING = 1;
     public final int TRIGGER_BATTERY_FULL = 2;
     public final int TRIGGER_BATTERY_CHARGING_OR_FULL = 3;
@@ -58,13 +71,16 @@ public class LEDManager {
     public final int TRIGGER_TORCH = 10;
     public final int TRIGGER_FLASH = 11;
     public final int TRIGGER_ALWAYS = 12;
+    private File chargingDir;
+    private File brightnessDir;
 
     public LEDManager(Context context) {
         this.context = context;
         process = null;
         rooted = true;
         SHARED_PREF = context.getPackageName() + ".prefs";
-        editor = context.getSharedPreferences(SHARED_PREF, 0).edit();
+        prefs = context.getSharedPreferences(SHARED_PREF, 0);
+        prefsEditor = prefs.edit();
         //check for root
         try {
             process = Runtime.getRuntime().exec("su");
@@ -82,6 +98,14 @@ public class LEDManager {
             }
         } else {
             rooted = false;
+        }
+        chargingDir = new File(pathToLEDdir + "charging");
+        brightnessDir = new File(pathToBrightness);
+        try {
+            devicePathToBrightness = brightnessDir.getCanonicalPath();
+            devicePathToLED = chargingDir.getCanonicalPath() + "/trigger";
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -142,7 +166,7 @@ public class LEDManager {
             if (getDevice().equals(DEVICE_NEXUS_6)) {
                 cmd = "dc-online";
             } else {
-                cmd = "pm89221-dc-online";
+                cmd = "pm8921-dc-online";
             }
         } else if (Choice == R.id.rBtn_Bluetooth) {
             if (getDevice().equals(DEVICE_NEXUS_6)) {
@@ -161,8 +185,7 @@ public class LEDManager {
      * Returns true if a directory called `charging` exists in /sys/class/leds/, to determine if the device is supported
      */
     public boolean isDeviceSupported() {
-        File chargingDir = new File(pathToLEDdir + "charging");
-        return ((chargingDir.exists()) && (chargingDir.isDirectory()));
+        return  devicePathToLED != null;
     }
 
     /*
@@ -176,7 +199,7 @@ public class LEDManager {
         String output = null;
         int val = 0;
         try {
-            deviceInput.writeBytes("cat " + pathToLED + "\n");
+            deviceInput.writeBytes("cat " + devicePathToLED + "\n");
             deviceInput.flush();
             output = this.deviceOutput.readLine();
         } catch (IOException e) {
@@ -216,11 +239,11 @@ public class LEDManager {
      */
     public int checkBrightness() {
         int brightness = 0;
-        if (!isDeviceSupported()){
+        if (!isDeviceSupported() || devicePathToBrightness == null){
             return 0;
         }
         try {
-            deviceInput.writeBytes("cat " + pathToBrightness + "\n");
+            deviceInput.writeBytes("cat " + devicePathToBrightness + "\n");
             deviceInput.flush();
             brightness = Integer.parseInt(deviceOutput.readLine());
         } catch (IOException e) {
@@ -237,26 +260,26 @@ public class LEDManager {
         if (!rooted || cmd == null || !isDeviceSupported())
             return;
         try {
-            deviceInput.writeBytes("echo " + cmd + " > " + pathToLED + "\n");
+            deviceInput.writeBytes("echo " + cmd + " > " + devicePathToLED + "\n");
             deviceInput.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        editor.putString("last_cmd", cmd).apply();
+        prefsEditor.putString("last_cmd", cmd).apply();
         Log.i(TAG, "Successfully set trigger: " + cmd);
     }
 
     public void ApplyBrightness(int brightness) {
-        if (!rooted || !isDeviceSupported()) return;
+        if (!rooted || !isDeviceSupported() || devicePathToBrightness == null) return;
         if (brightness != 10) brightness *= 25;
         else brightness = 255;
         try {
-            deviceInput.writeBytes("echo " + Integer.toString(brightness) + " > " + pathToBrightness + "\n");
+            deviceInput.writeBytes("echo " + Integer.toString(brightness) + " > " + devicePathToBrightness + "\n");
             deviceInput.flush();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        editor.putInt("last_brightness", brightness).apply();
+    }
+        prefsEditor.putInt("last_brightness", brightness).apply();
     }
 
     /*
@@ -271,23 +294,42 @@ public class LEDManager {
         else if (output.contains(DEVICE_MOTO_G)) device = DEVICE_MOTO_G;
         else if (output.contains(DEVICE_MOTO_X)) device = DEVICE_MOTO_X;
         else if (output.contains(DEVICE_NEXUS_6)) device = DEVICE_NEXUS_6;
+        else if (output.contains(DEVICE_MAXX)) device = DEVICE_MAXX;
+        else if (output.contains(DEVICE_ULTRA)) device = DEVICE_ULTRA;
         return device;
     }
 
     public void setOnBoot() {
-        String cmd = context.getSharedPreferences(SHARED_PREF, 0).getString("last_cmd", null);
-        int brightness = context.getSharedPreferences(SHARED_PREF, 0).getInt("last_brightness", -1);
-        if (brightness != -1) {
+        String cmd = prefs.getString("last_cmd", null);
+        int brightness = prefs.getInt("last_brightness", -1);
+        if (brightness != -1 && devicePathToBrightness != null) {
             brightness /= 25;
             ApplyBrightness(brightness);
         }
-        if (cmd != null) {
+        if (cmd != null && devicePathToLED != null) {
             try {
-                deviceInput.writeBytes("echo " + cmd + " > " + pathToLED + "\n");
+                deviceInput.writeBytes("echo " + cmd + " > " + devicePathToLED + "\n");
                 deviceInput.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        if (checkState() != -1 && prefs.getBoolean("show_notif", true)) {
+            Log.i(TAG, "LED trigger applied on boot");
+            Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                    .setSmallIcon(R.drawable.ic_stat_notification)
+                    .setLargeIcon(largeIcon)
+                    .setContentTitle(context.getString(R.string.app_name_full))
+                    .setContentText(context.getString(R.string.notification_content));
+            Intent resultIntent = new Intent(context, MainActivity.class);
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+            stackBuilder.addParentStack(MainActivity.class);
+            stackBuilder.addNextIntent(resultIntent);
+            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(resultPendingIntent);
+            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(0, builder.build());
         }
     }
 }
